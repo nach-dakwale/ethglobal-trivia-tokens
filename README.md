@@ -13,12 +13,26 @@ Create the world's first AI-powered play-to-earn token through a Discord bot tha
 
 ## Token Economics
 - Total Supply: 1,000,000,000 $TRIVIA tokens (1 billion)
+- Initial Distribution:
+  * 45% Pre-sale (Release Schedule):
+    - Day 1: 20% (200M tokens)
+    - Day 31: 12.5% (125M tokens)
+    - Day 61: 12.5% (125M tokens)
+  * 45% Marketing & Liquidity:
+    - 25% Marketing/Buyback Fund
+    - 10% DEX Liquidity
+    - 10% Airdrops
+  * 10% Staking Rewards Pool
+- Staking APY Schedule:
+  * Months 1-3: 400% APY
+  * Months 4-6: 250% APY
+  * Months 7-12: 200% APY
 - Reward Structure:
   * Hard questions: 10 $TRIVIA tokens
   * Easy questions: 5 $TRIVIA tokens
   * Borderline answers: 50% of normal reward
 - Transaction Tax: 2% collected by treasury wallet
-- Server Access: Discord server owners must stake $TRIVIA tokens to use the bot
+- Server Access: Discord server owners must stake 100,000 $TRIVIA tokens (0.01% of supply) to use the bot
 - Vesting: 7-day lock period on earned tokens before transfer/trade
 
 ## Architecture Overview
@@ -147,3 +161,11 @@ The project adopts a trust-based approach focusing on user experience:
    - Test coverage
    - Updated documentation
    - Security audit checklist
+
+## Known Limitations & Future Improvements
+- Concurrent Server Management: The current implementation handles multiple Discord servers without server-specific queuing systems
+- No Anti-farming Mechanisms: Users can potentially create multiple Discord accounts
+- Base L2 Dependency: System operations may be affected by Base network conditions
+- Trust-based Wallet Registration: No verification of wallet ownership during registration
+- No Dispute Resolution: AI validation results are final and cannot be disputed
+- Simple Treasury Management: Single wallet implementation for hackathon purposes
