@@ -7,7 +7,14 @@
     "compile": "hardhat compile"
   },
   "dependencies": {
-    "@openzeppelin/contracts": "5.0.1"
+    "@chakra-ui/provider": "^2.4.2",
+    "@chakra-ui/react": "^2.8.2",
+    "@chakra-ui/system": "^2.6.2",
+    "@chakra-ui/theme-utils": "^2.0.21",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@openzeppelin/contracts": "5.0.1",
+    "framer-motion": "^6.5.1"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "4.0.0",

@@ -6,7 +6,7 @@
 Create the world's first AI-powered play-to-earn token through a Discord bot that rewards correct open-answer trivia responses with ERC-20 tokens on Base blockchain. The project features:
 - Automated question generation and user-friendly answer validation using GPT-4o-mini
 - Token economics with transaction taxes and staking requirements
-- React-based staking interface powered by Coinbase OnchainKit
+- React-based staking and swapping interface powered by Coinbase OnchainKit
 - Secure wallet integration via Coinbase AgentKit
 - 7-day vesting period for earned tokens
 - Seamless deployment on Base, Coinbase's Ethereum L2
