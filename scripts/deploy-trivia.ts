@@ -10,7 +10,7 @@ async function main() {
   const presaleWallet = deployer.address;
   const treasuryWallet = deployer.address;
   const liquidityWallet = deployer.address;
-  const airdropWallet = deployer.address;
+  const airdropWallet = "0x1402D4103A873650B7DF3d44f23436663A3e307c";
 
   const TriviaToken = await ethers.getContractFactory("TriviaToken");
   const triviaToken = await TriviaToken.deploy(

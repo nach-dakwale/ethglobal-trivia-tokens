@@ -47,16 +47,29 @@ contract TriviaToken is ERC20, Ownable, ReentrancyGuard {
     mapping(address => uint256) private _stakedBalance;
     mapping(address => uint256) private _lastRewardClaim;
     
+    // New mappings for cooldown periods
+    mapping(address => uint256) private _pendingUnstakeAmount;
+    mapping(address => uint256) private _unstakeRequestTime;
+    mapping(address => uint256) private _pendingRewardsAmount;
+    mapping(address => uint256) private _rewardsRequestTime;
+    
     // Vesting state
     bool public secondReleaseExecuted;
     bool public thirdReleaseExecuted;
 
+    // New mapping for cooldown overrides
+    mapping(address => bool) private _cooldownOverrides;
+
     // Events
     event TokensLocked(address indexed user, uint256 amount, uint256 unlockTime);
     event Staked(address indexed user, uint256 amount);
+    event UnstakeRequested(address indexed user, uint256 amount, uint256 unlockTime);
     event Unstaked(address indexed user, uint256 amount);
+    event RewardsRequested(address indexed user, uint256 amount, uint256 unlockTime);
     event RewardsClaimed(address indexed user, uint256 amount);
     event VestingReleased(uint256 releaseNumber, uint256 amount);
+    event CooldownOverrideSet(address indexed user, bool status);
+    event EmergencyCooldownOverride(address indexed user, string action);
 
     constructor(
         address _presaleWallet,
@@ -126,17 +139,10 @@ contract TriviaToken is ERC20, Ownable, ReentrancyGuard {
         return super.transferFrom(from, to, netAmount);
     }
 
-    // Staking functionality
+    // Updated staking functionality
     function stake(uint256 amount) external nonReentrant {
         require(amount > 0, "Cannot stake 0");
         require(balanceOf(msg.sender) >= amount, "Insufficient balance");
-
-        // Claim any pending rewards before updating stake
-        uint256 rewards = calculatePendingRewards(msg.sender);
-        if (rewards > 0) {
-            _mint(msg.sender, rewards);
-            emit RewardsClaimed(msg.sender, rewards);
-        }
 
         _stakedBalance[msg.sender] += amount;
         _lastRewardClaim[msg.sender] = block.timestamp;
@@ -145,22 +151,59 @@ contract TriviaToken is ERC20, Ownable, ReentrancyGuard {
         emit Staked(msg.sender, amount);
     }
 
-    function unstake(uint256 amount) external nonReentrant {
+    // New unstaking functions with cooldown
+    function requestUnstake(uint256 amount) external nonReentrant {
         require(amount > 0, "Cannot unstake 0");
-        require(_stakedBalance[msg.sender] >= amount, "Insufficient staked balance");
+        require(amount == _stakedBalance[msg.sender], "Must unstake entire balance");
+        require(_pendingUnstakeAmount[msg.sender] == 0, "Existing unstake pending");
 
-        uint256 rewards = calculatePendingRewards(msg.sender);
-        _stakedBalance[msg.sender] -= amount;
+        // Calculate and add pending rewards
+        uint256 totalRewards = calculatePendingRewards(msg.sender);
+        uint256 totalAmount = amount + totalRewards;
+        
+        // Update state
+        _stakedBalance[msg.sender] = 0;
+        _pendingUnstakeAmount[msg.sender] = totalAmount;
+        _unstakeRequestTime[msg.sender] = block.timestamp;
         _lastRewardClaim[msg.sender] = block.timestamp;
         
-        _transfer(address(this), msg.sender, amount);
-        
-        if (rewards > 0) {
-            _mint(msg.sender, rewards);
-            emit RewardsClaimed(msg.sender, rewards);
+        emit UnstakeRequested(msg.sender, totalAmount, block.timestamp + LOCK_PERIOD);
+    }
+
+    function executeUnstake() external nonReentrant {
+        require(_pendingUnstakeAmount[msg.sender] > 0, "No pending unstake");
+        require(
+            _cooldownOverrides[msg.sender] || 
+            block.timestamp >= _unstakeRequestTime[msg.sender] + LOCK_PERIOD, 
+            "Cooldown period not met"
+        );
+
+        uint256 amount = _pendingUnstakeAmount[msg.sender];
+        uint256 taxAmount = (amount * TAX_RATE) / 10000;
+        uint256 netAmount = amount - taxAmount;
+
+        // Reset unstaking state
+        _pendingUnstakeAmount[msg.sender] = 0;
+        _unstakeRequestTime[msg.sender] = 0;
+        _pendingRewardsAmount[msg.sender] = 0; // Clear any pending rewards
+
+        // Transfer tokens
+        _transfer(address(this), treasuryWallet, taxAmount);
+        _mint(msg.sender, netAmount);
+
+        if (_cooldownOverrides[msg.sender]) {
+            emit EmergencyCooldownOverride(msg.sender, "unstake");
         }
-        
-        emit Unstaked(msg.sender, amount);
+        emit Unstaked(msg.sender, netAmount);
+    }
+
+    // Remove separate rewards claiming functions since they're now bundled with unstaking
+    function requestRewardsClaim() public pure {
+        revert("Use unstake to claim rewards");
+    }
+
+    function executeRewardsClaim() public pure {
+        revert("Use unstake to claim rewards");
     }
 
     // Reward calculation and claiming
@@ -172,7 +215,7 @@ contract TriviaToken is ERC20, Ownable, ReentrancyGuard {
     }
 
     function calculatePendingRewards(address user) public view returns (uint256) {
-        if (block.timestamp <= _lastRewardClaim[user] || _stakedBalance[user] == 0) {
+        if (_stakedBalance[user] == 0) {
             return 0;
         }
 
@@ -181,19 +224,8 @@ contract TriviaToken is ERC20, Ownable, ReentrancyGuard {
         
         // Calculate rewards: principal * APY * timeElapsed / (365 days * 10000)
         // We divide by 10000 because APY is in basis points (e.g., 40000 = 400%)
-        // For multiple stakes, we calculate based on the total staked amount for the entire period
         uint256 rewards = (_stakedBalance[user] * apy * timeElapsed) / (365 days * 10000);
         return rewards;
-    }
-
-    function claimRewards() public nonReentrant {
-        uint256 rewards = calculatePendingRewards(msg.sender);
-        require(rewards > 0, "No rewards to claim");
-
-        _lastRewardClaim[msg.sender] = block.timestamp;
-        _mint(msg.sender, rewards);
-        
-        emit RewardsClaimed(msg.sender, rewards);
     }
 
     // Reward distribution for trivia answers
@@ -212,11 +244,40 @@ contract TriviaToken is ERC20, Ownable, ReentrancyGuard {
         return _stakedBalance[user];
     }
 
+    function getPendingUnstake(address user) external view returns (uint256, uint256) {
+        return (_pendingUnstakeAmount[user], _unstakeRequestTime[user]);
+    }
+
+    function getTotalPendingAmount(address user) external view returns (uint256) {
+        if (_pendingUnstakeAmount[user] > 0) {
+            return _pendingUnstakeAmount[user];
+        }
+        return _stakedBalance[user] + calculatePendingRewards(user);
+    }
+
     function getUnlockTime(address user) external view returns (uint256) {
         return _lockTimestamps[user];
     }
 
     function hasServerAccess(address user) external view returns (bool) {
         return _stakedBalance[user] >= STAKE_REQUIREMENT;
+    }
+
+    // New functions for cooldown management
+    function setCooldownOverride(address user, bool status) external onlyOwner {
+        _cooldownOverrides[user] = status;
+        emit CooldownOverrideSet(user, status);
+    }
+
+    function hasCooldownOverride(address user) public view returns (bool) {
+        return _cooldownOverrides[user];
+    }
+
+    // Emergency function to bypass cooldown for multiple users
+    function emergencyOverrideCooldowns(address[] calldata users) external onlyOwner {
+        for (uint i = 0; i < users.length; i++) {
+            _cooldownOverrides[users[i]] = true;
+            emit CooldownOverrideSet(users[i], true);
+        }
     }
 } 

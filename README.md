@@ -1,12 +1,12 @@
 # The First AI-Powered Play-to-Earn Token: Trivia Token Bot
 
-> Built for ETHGlobal's "Agentic Ethereum" Hackathon 2025, leveraging Coinbase's AgentKit, OnchainKit, and the Base blockchain.
+> Built for ETHGlobal's "Agentic Ethereum" Hackathon 2025, leveraging Coinbase's AgentKit and the Base blockchain.
 
 ## Project Objective
 Create the world's first AI-powered play-to-earn token through a Discord bot that rewards correct open-answer trivia responses with ERC-20 tokens on Base blockchain. The project features:
 - Automated question generation and user-friendly answer validation using GPT-4o-mini
 - Token economics with transaction taxes and staking requirements
-- React-based staking and swapping interface powered by Coinbase OnchainKit
+- React-based staking and swapping interface
 - Secure wallet integration via Coinbase AgentKit
 - 7-day vesting period for earned tokens
 - Seamless deployment on Base, Coinbase's Ethereum L2
@@ -43,13 +43,11 @@ graph TD
     D[React Frontend] --> C
     C --> E[Base L2]
     F[Coinbase AgentKit] -->|Wallet Management| A
-    G[Coinbase OnchainKit] -->|Web3 Components| D
 ```
 
 ## Tech Stack & Dependencies
 **Coinbase Integration**
 - AgentKit ^0.2.1 (Secure wallet management)
-- OnchainKit (Web3 frontend components)
 - Base (Ethereum L2 blockchain)
 
 **Smart Contracts**
@@ -146,7 +144,42 @@ The project adopts a trust-based approach focusing on user experience:
 - Server staking requirement as primary anti-abuse measure
 - Simple treasury management through designated wallet
 - Trust-based answer validation system
+- Trust-based wallet registration (no ownership verification required)
 - Focus on community engagement over strict security measures
+
+## Fast Followers
+1. Smart Contract Security Audit
+2. Multi-signature Treasury Management
+3. Emergency Pause Functionality
+4. Rate Limiting for Question Generation
+
+## Known Limitations & Future Improvements
+- Concurrent Server Management: The current implementation handles multiple Discord servers without server-specific queuing systems
+- No Anti-farming Mechanisms: Users can potentially create multiple Discord accounts
+- Base L2 Dependency: System operations may be affected by Base network conditions
+- Trust-based Wallet Registration: No verification of wallet ownership during registration
+- No Dispute Resolution: AI validation results are final and cannot be disputed
+- Simple Treasury Management: Single wallet implementation for hackathon purposes
+- No Smart Contract Upgradeability: Contracts will be non-upgradeable in initial release
+- API Cost Management: No rate limiting implemented for question generation
+- No Emergency Pause: No mechanism to pause contract operations in case of emergencies
+- Single-signature Treasury: No multi-signature requirement for treasury operations
+- Discord Load Management: No specific measures for handling high server loads
+- API Scaling: No specific measures for managing API costs at scale
+
+## Token Distribution Details
+- Pre-sale pricing determined through direct investor negotiations
+- DEX liquidity provided manually through Uniswap
+- No lockup period on marketing/liquidity allocation
+- Marketing funds allocated for maintaining token value
+- Base L2's low gas fees enable efficient reward distribution
+
+## Reward Mechanics
+- No cooldown between questions
+- Borderline answers receive exactly 50% of the normal reward
+- No dispute mechanism for AI validations
+- Questions generated using GPT-4o-mini model
+- Concurrent trivia sessions allowed across all time zones
 
 ## Scalability
 - One active trivia session per Discord server
@@ -161,11 +194,3 @@ The project adopts a trust-based approach focusing on user experience:
    - Test coverage
    - Updated documentation
    - Security audit checklist
-
-## Known Limitations & Future Improvements
-- Concurrent Server Management: The current implementation handles multiple Discord servers without server-specific queuing systems
-- No Anti-farming Mechanisms: Users can potentially create multiple Discord accounts
-- Base L2 Dependency: System operations may be affected by Base network conditions
-- Trust-based Wallet Registration: No verification of wallet ownership during registration
-- No Dispute Resolution: AI validation results are final and cannot be disputed
-- Simple Treasury Management: Single wallet implementation for hackathon purposes

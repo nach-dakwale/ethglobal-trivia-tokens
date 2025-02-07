@@ -2,44 +2,44 @@ import { createConfig, http } from 'wagmi';
 import { baseSepolia } from 'wagmi/chains';
 import { injected, metaMask } from 'wagmi/connectors';
 
-const INFURA_PROJECT_ID = import.meta.env.VITE_INFURA_PROJECT_ID;
-const INFURA_RPC_URL = `https://base-sepolia.infura.io/v3/${INFURA_PROJECT_ID}`;
-
-// Configure Base Sepolia with Infura
-const baseSepoliaChain = {
+// Base Sepolia RPC URL and chain configuration
+export const baseSepoliaChain = {
   ...baseSepolia,
+  id: 84532,
+  name: 'Base Sepolia',
+  network: 'base-sepolia',
+  nativeCurrency: {
+    name: 'Sepolia Ether',
+    symbol: 'ETH',
+    decimals: 18,
+  },
   rpcUrls: {
-    ...baseSepolia.rpcUrls,
     default: {
-      http: [INFURA_RPC_URL, 'https://sepolia.base.org']
+      http: ['https://sepolia.base.org']
     },
     public: {
-      http: [INFURA_RPC_URL, 'https://sepolia.base.org']
+      http: ['https://sepolia.base.org']
     }
-  }
+  },
+  blockExplorers: {
+    default: {
+      name: 'Base Sepolia Explorer',
+      url: 'https://sepolia.basescan.org'
+    }
+  },
+  testnet: true
 };
 
-// Create wagmi config with additional options
+// Create wagmi config with Base Sepolia
 export const config = createConfig({
   chains: [baseSepoliaChain],
   connectors: [
-    metaMask(),
-    injected()
+    injected({
+      shimDisconnect: true,
+    }),
+    metaMask()
   ],
   transports: {
-    [baseSepoliaChain.id]: http(INFURA_RPC_URL, {
-      batch: {
-        batchSize: 1024,
-        wait: 16
-      },
-      fetchOptions: {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      },
-      retryCount: 3,
-      retryDelay: 1000,
-      timeout: 30000
-    })
+    [baseSepoliaChain.id]: http('https://sepolia.base.org')
   }
 }); 

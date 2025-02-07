@@ -4,16 +4,16 @@ import * as dotenv from "dotenv";
 
 dotenv.config();
 
-const PRIVATE_KEY = process.env.PRIVATE_KEY || "0000000000000000000000000000000000000000000000000000000000000000";
-const INFURA_PROJECT_ID = process.env.VITE_INFURA_PROJECT_ID || "";
+// Remove '0x' prefix if present and ensure the key is valid
+const PRIVATE_KEY = (process.env.PRIVATE_KEY || "").replace('0x', '');
 const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY || "";
 
 const config: HardhatUserConfig = {
   solidity: "0.8.20",
   networks: {
     "base-sepolia": {
-      url: `https://base-sepolia.infura.io/v3/${INFURA_PROJECT_ID}`,
-      accounts: [PRIVATE_KEY],
+      url: "https://sepolia.base.org",
+      accounts: [`0x${PRIVATE_KEY}`],
       chainId: 84532,
     },
   },

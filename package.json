@@ -17,11 +17,14 @@
     "framer-motion": "^6.5.1"
   },
   "devDependencies": {
-    "@nomicfoundation/hardhat-toolbox": "4.0.0",
-    "@types/chai": "4.3.11",
-    "@types/mocha": "10.0.6",
+    "@nomicfoundation/hardhat-ethers": "^3.0.8",
+    "@nomicfoundation/hardhat-network-helpers": "^1.0.12",
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "@types/chai": "^4.3.11",
+    "@types/mocha": "^10.0.6",
     "@types/node": "20.11.16",
-    "hardhat": "^2.19.4",
+    "dotenv": "^16.4.7",
+    "hardhat": "^2.22.18",
     "ts-node": "10.9.2",
     "typescript": "5.3.3"
   }

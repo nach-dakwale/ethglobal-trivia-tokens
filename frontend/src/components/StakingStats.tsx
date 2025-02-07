@@ -3,11 +3,16 @@ import { useAccount, useReadContract } from 'wagmi';
 import { formatEther } from 'viem';
 import { TRIVIA_TOKEN_ADDRESS, TRIVIA_TOKEN_ABI } from '../constants';
 
-function StakingStat({ label, value }: { label: string; value: string }) {
+function StakingStat({ label, value, subValue }: { label: string; value: string; subValue?: string }) {
   return (
     <VStack align="start" spacing={1}>
       <Text color="whiteAlpha.600" fontSize="sm">{label}</Text>
       <Text color="whiteAlpha.900" fontSize="lg" fontWeight="bold">{value}</Text>
+      {subValue && (
+        <Text color="whiteAlpha.600" fontSize="xs">
+          {subValue}
+        </Text>
+      )}
     </VStack>
   );
 }
@@ -15,19 +20,43 @@ function StakingStat({ label, value }: { label: string; value: string }) {
 export function StakingStats() {
   const { address } = useAccount();
 
-  const { data: stakedBalance } = useReadContract({
-    address: TRIVIA_TOKEN_ADDRESS,
+  const { data: stakedBalance, refetch: refetchStakedBalance } = useReadContract({
+    address: TRIVIA_TOKEN_ADDRESS as `0x${string}`,
     abi: TRIVIA_TOKEN_ABI,
     functionName: 'getStakedBalance',
-    args: [address],
-  }) as { data: bigint };
+    args: address ? [address] : undefined,
+  }) as { data: bigint, refetch: () => void };
 
-  const { data: pendingRewards } = useReadContract({
-    address: TRIVIA_TOKEN_ADDRESS,
+  const { data: pendingRewards, refetch: refetchPendingRewards } = useReadContract({
+    address: TRIVIA_TOKEN_ADDRESS as `0x${string}`,
     abi: TRIVIA_TOKEN_ABI,
     functionName: 'calculatePendingRewards',
-    args: [address],
-  }) as { data: bigint };
+    args: address ? [address] : undefined,
+  }) as { data: bigint, refetch: () => void };
+
+  // Get any rewards that were locked in when requesting rewards claim
+  const { data: pendingRewardsData } = useReadContract({
+    address: TRIVIA_TOKEN_ADDRESS as `0x${string}`,
+    abi: TRIVIA_TOKEN_ABI,
+    functionName: 'getPendingRewards',
+    args: address ? [address] : undefined,
+  }) as { data: [bigint, bigint] };
+
+  // Export refetch functions
+  if (typeof window !== 'undefined') {
+    (window as any).refetchStakingStats = () => {
+      refetchStakedBalance();
+      refetchPendingRewards();
+    };
+  }
+
+  const requestedRewards = pendingRewardsData ? pendingRewardsData[0] : 0n;
+  const totalPendingRewards = (pendingRewards || 0n) + requestedRewards;
+
+  // Format rewards for display
+  const formattedActiveRewards = pendingRewards ? formatEther(pendingRewards) : '0';
+  const formattedLockedRewards = requestedRewards ? formatEther(requestedRewards) : '0';
+  const formattedTotalRewards = formatEther(totalPendingRewards);
 
   return (
     <Grid templateColumns={{ base: '1fr', sm: 'repeat(2, 1fr)' }} gap={4}>
@@ -39,8 +68,9 @@ export function StakingStats() {
       </GridItem>
       <GridItem>
         <StakingStat
-          label="Pending Rewards"
-          value={`${pendingRewards ? formatEther(pendingRewards) : '0'} TRIVIA`}
+          label="Total Pending Rewards"
+          value={`${Number(formattedTotalRewards).toFixed(4)} TRIVIA`}
+          subValue={requestedRewards > 0n ? `Includes ${Number(formattedLockedRewards).toFixed(4)} locked rewards` : undefined}
         />
       </GridItem>
     </Grid>
