@@ -12,7 +12,7 @@ Create the world's first AI-powered play-to-earn token through a Discord bot tha
 - Seamless deployment on Base, Coinbase's Ethereum L2
 
 ## Token Economics
-- Total Supply: 1,000,000,000 $TRIVIA tokens (1 billion)
+- Initial Supply: 1,000,000,000 $TRIVIA tokens (1 billion)
 - Initial Distribution:
   * 45% Pre-sale (Release Schedule):
     - Day 1: 20% (200M tokens)
@@ -23,16 +23,15 @@ Create the world's first AI-powered play-to-earn token through a Discord bot tha
     - 10% DEX Liquidity
     - 10% Airdrops
   * 10% Staking Rewards Pool
-- Staking APY Schedule:
-  * Months 1-3: 400% APY
-  * Months 4-6: 250% APY
-  * Months 7-12: 200% APY
-- Reward Structure:
-  * Hard questions: 10 $TRIVIA tokens
-  * Easy questions: 5 $TRIVIA tokens
-  * Borderline answers: 50% of normal reward
+
+Additional tokens are minted as rewards for correct trivia answers:
+- Hard questions: 10 $TRIVIA tokens
+- Easy questions: 5 $TRIVIA tokens
+- Borderline answers: 50% of normal reward
+
+Other Economic Features:
 - Transaction Tax: 2% collected by treasury wallet
-- Server Access: Discord server owners must stake 100,000 $TRIVIA tokens (0.01% of supply) to use the bot
+- Server Access: Discord server owners must stake 100,000 $TRIVIA tokens (0.01% of initial supply) to use the bot
 - Vesting: 7-day lock period on earned tokens before transfer/trade
 
 ## Architecture Overview
@@ -175,7 +174,7 @@ The project adopts a trust-based approach focusing on user experience:
 - Base L2's low gas fees enable efficient reward distribution
 
 ## Reward Mechanics
-- No cooldown between questions
+- Question intervals configurable by server administrators (1-60 minutes)
 - Borderline answers receive exactly 50% of the normal reward
 - No dispute mechanism for AI validations
 - Questions generated using GPT-4o-mini model

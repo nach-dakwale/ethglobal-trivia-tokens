@@ -2,8 +2,8 @@ import { ethers } from "hardhat";
 import { formatEther } from "ethers";
 
 async function main() {
-  const TREASURY_ADDRESS = "0x1402D4103A873650B7DF3d44f23436663A3e307c";
-  const CONTRACT_ADDRESS = "0x13250D67E38Ff5B89667627c612F0f72B50347dE";
+  const TREASURY_ADDRESS = "0x728f61E701b067bA7Bf3b0Ed795935a32976e6b5";
+  const CONTRACT_ADDRESS = "0xEaD61BC4b3bE36FbD6E5887800F30b8Ee68e6D84";
   
   // Get the contract instance
   const triviaToken = await ethers.getContractAt(

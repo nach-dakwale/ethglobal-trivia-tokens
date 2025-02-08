@@ -11,6 +11,7 @@ yarn-error.log*
 .env.development
 .env.test
 .env.production
+.env.mainnet
 
 # Hardhat files
 /cache
@@ -48,3 +49,4 @@ verify-*.json
 .env.development.local
 .env.test.local
 .env.production.local
+credentials

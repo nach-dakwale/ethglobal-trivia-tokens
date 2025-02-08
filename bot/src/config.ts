@@ -27,8 +27,8 @@ export const CONFIG = configSchema.parse({
   CLIENT_ID: process.env.CLIENT_ID,
   OPENAI_API_KEY: process.env.OPENAI_API_KEY,
   MODEL: 'gpt-4-turbo-preview',
-  CONTRACT_ADDRESS: process.env.CONTRACT_ADDRESS || '0x13250D67E38Ff5B89667627c612F0f72B50347dE',
+  CONTRACT_ADDRESS: process.env.CONTRACT_ADDRESS || '0xD4fE1b449383228CDB8F2D8E1445C07504768E9E',
   PRIVATE_KEY: process.env.PRIVATE_KEY,
-  RPC_URL: process.env.RPC_URL || 'https://sepolia.base.org',
-  CHAIN_ID: Number(process.env.CHAIN_ID) || 84532,
+  RPC_URL: process.env.RPC_URL || 'https://mainnet.base.org',
+  CHAIN_ID: Number(process.env.CHAIN_ID) || 8453,
 }); 

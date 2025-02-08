@@ -1,12 +1,12 @@
 import { ethers } from "hardhat";
 
 async function main() {
-  const userAddress = "0x1402D4103A873650B7DF3d44f23436663A3e307c";
+  const userAddress = "0x728f61E701b067bA7Bf3b0Ed795935a32976e6b5";
   
   // Get the contract instance
   const triviaToken = await ethers.getContractAt(
     "TriviaToken",
-    "0x13250D67E38Ff5B89667627c612F0f72B50347dE"
+    "0xEaD61BC4b3bE36FbD6E5887800F30b8Ee68e6D84"
   );
 
   console.log("Setting cooldown override for address:", userAddress);
