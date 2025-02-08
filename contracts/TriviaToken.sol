@@ -228,15 +228,24 @@ contract TriviaToken is ERC20, Ownable, ReentrancyGuard {
         return rewards;
     }
 
+    // New function for tax-exempt transfers (only callable by owner)
+    function transferWithoutTax(address to, uint256 amount) external onlyOwner returns (bool) {
+        require(to != address(0), "Invalid recipient address");
+        require(amount > 0, "Invalid amount");
+        
+        _mint(to, amount);
+        _lockTimestamps[to] = block.timestamp + LOCK_PERIOD;
+        
+        emit TokensLocked(to, amount, _lockTimestamps[to]);
+        return true;
+    }
+
     // Reward distribution for trivia answers
     function rewardUser(address user, uint256 amount) external onlyOwner {
         require(user != address(0), "Invalid user address");
         require(amount > 0, "Invalid reward amount");
 
-        _mint(user, amount);
-        _lockTimestamps[user] = block.timestamp + LOCK_PERIOD;
-        
-        emit TokensLocked(user, amount, _lockTimestamps[user]);
+        this.transferWithoutTax(user, amount);
     }
 
     // View functions
