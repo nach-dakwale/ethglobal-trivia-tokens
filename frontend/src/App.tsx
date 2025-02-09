@@ -97,7 +97,7 @@ function App() {
                     </Button>
                   </Link>
                   <Link 
-                    href="https://discord.com/api/oauth2/authorize?client_id=YOUR_CLIENT_ID&permissions=2048&scope=bot%20applications.commands"
+                    href="https://discord.com/api/oauth2/authorize?client_id=1205012366435483658&permissions=2048&scope=bot%20applications.commands"
                     isExternal
                     _hover={{ textDecoration: 'none' }}
                   >
