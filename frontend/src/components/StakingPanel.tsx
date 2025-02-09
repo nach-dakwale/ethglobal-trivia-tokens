@@ -111,35 +111,6 @@ function EarningsCalculator({
   );
 }
 
-function DiscordBotInstructions() {
-  return (
-    <Box p={6} bg="whiteAlpha.100" borderRadius="xl">
-      <HStack spacing={4} mb={4}>
-        <FaDiscord size="24px" color="#7289da" />
-        <Heading size="sm">Add Trivia Bot to Your Server</Heading>
-      </HStack>
-      <VStack spacing={3} align="start">
-        <Text>1. Click the "Add to Discord" button below</Text>
-        <Text>2. Select your server from the dropdown</Text>
-        <Text>3. Review and grant the required permissions</Text>
-        <Text>4. Use <Text as="span" color="purple.400" fontFamily="mono">/trivia start</Text> to begin a game</Text>
-      </VStack>
-      <Button
-        leftIcon={<FaDiscord />}
-        mt={6}
-        size="lg"
-        w="full"
-        colorScheme="purple"
-        as="a"
-        href="https://discord.com/api/oauth2/authorize?client_id=1205012366435483658&permissions=2048&scope=bot%20applications.commands"
-        target="_blank"
-      >
-        Add to Discord
-      </Button>
-    </Box>
-  );
-}
-
 function InfoBox({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <Card bg="whiteAlpha.100" variant="outline" borderColor="whiteAlpha.200">

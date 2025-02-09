@@ -83,7 +83,7 @@ npm run deploy:mainnet
 ## Known Limitations
 - Manual treasury management
 - No emergency pause functionality
-- No automated reward distribution yet
+- No automated compounding of staking rewards
 
 ## Contributing
 1. Fork the repository

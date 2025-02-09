@@ -96,20 +96,6 @@ function App() {
                       Trade on Uniswap
                     </Button>
                   </Link>
-                  <Link 
-                    href="https://discord.com/api/oauth2/authorize?client_id=1205012366435483658&permissions=2048&scope=bot%20applications.commands"
-                    isExternal
-                    _hover={{ textDecoration: 'none' }}
-                  >
-                    <Button
-                      size="lg"
-                      leftIcon={<FaDiscord />}
-                      colorScheme="purple"
-                      variant="outline"
-                    >
-                      Add to Discord
-                    </Button>
-                  </Link>
                 </HStack>
               </VStack>
             </VStack>
