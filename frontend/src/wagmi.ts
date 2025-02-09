@@ -1,5 +1,5 @@
 import { createConfig, http } from 'wagmi';
-import { baseSepolia } from 'wagmi/chains';
+import { base } from 'wagmi/chains';
 import { injected, metaMask } from 'wagmi/connectors';
 
 // Base Sepolia RPC URL and chain configuration
@@ -30,9 +30,9 @@ export const baseSepoliaChain = {
   testnet: true
 };
 
-// Create wagmi config with Base Sepolia
+// Create wagmi config with Base mainnet
 export const config = createConfig({
-  chains: [baseSepoliaChain],
+  chains: [base],
   connectors: [
     injected({
       shimDisconnect: true,
@@ -40,6 +40,6 @@ export const config = createConfig({
     metaMask()
   ],
   transports: {
-    [baseSepoliaChain.id]: http('https://sepolia.base.org')
+    [base.id]: http('https://mainnet.base.org')
   }
 }); 

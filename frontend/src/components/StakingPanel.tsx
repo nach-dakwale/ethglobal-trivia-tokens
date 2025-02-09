@@ -30,7 +30,7 @@ import { useStakingContract } from '../hooks/useStakingContract';
 import { StakeForm } from './StakeForm';
 import { UnstakeForm } from './UnstakeForm';
 import { StakingStats } from './StakingStats';
-import { baseSepoliaChain } from '../wagmi';
+import { base } from 'wagmi/chains';
 import { formatEther } from 'viem';
 import { TRIVIA_TOKEN_ADDRESS, TRIVIA_TOKEN_ABI } from '../constants';
 
@@ -205,7 +205,7 @@ export function StakingPanel() {
   const now = new Date();
   const daysSinceDeployment = Math.floor((now.getTime() - deploymentDate.getTime()) / (24 * 60 * 60 * 1000));
 
-  const isWrongNetwork = chainId !== baseSepoliaChain.id;
+  const isWrongNetwork = chainId !== base.id;
 
   const handleRequestRewards = async () => {
     try {
@@ -321,17 +321,17 @@ export function StakingPanel() {
             <Box>
               <AlertTitle>Wrong Network</AlertTitle>
               <AlertDescription>
-                Please switch to Base Sepolia testnet to use the staking interface.
-                You'll need Base Sepolia ETH for gas fees.
+                Please switch to Base to use the staking interface.
+                You'll need Base ETH for gas fees.
               </AlertDescription>
             </Box>
           </Alert>
           <VStack spacing={2}>
             <Button
               colorScheme="purple"
-              onClick={() => switchChain({ chainId: baseSepoliaChain.id })}
+              onClick={() => switchChain({ chainId: base.id })}
             >
-              Switch to Base Sepolia
+              Switch to Base
             </Button>
             <Link
               href="https://sepoliafaucet.com/base"
@@ -339,7 +339,7 @@ export function StakingPanel() {
               color="purple.300"
               fontSize="sm"
             >
-              Get Base Sepolia ETH from Faucet
+              Get Base ETH from Faucet
             </Link>
           </VStack>
           <Text color="whiteAlpha.600" fontSize="sm">
