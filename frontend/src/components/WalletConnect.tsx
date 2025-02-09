@@ -1,6 +1,4 @@
-import { Button } from '@chakra-ui/button';
-import { Stack } from '@chakra-ui/layout';
-import { Text } from '@chakra-ui/react';
+import { Button, Stack, Text } from '@chakra-ui/react';
 import { useAccount, useConnect, useDisconnect } from 'wagmi';
 import { injected } from 'wagmi/connectors';
 

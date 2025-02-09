@@ -1,123 +1,123 @@
-import { Box, Container, Heading, Stack, Text, SimpleGrid, Icon } from '@chakra-ui/react';
-import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/tabs';
-import { ChakraProvider } from '@chakra-ui/provider';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { WagmiConfig } from 'wagmi';
-import { config } from './wagmi';
-import theme from './theme';
-import { WalletConnect } from './components/WalletConnect';
-import { StakingPanel } from './components/StakingPanel';
-import { SwapPanel } from './components/SwapPanel';
-import { FaBrain, FaCoins, FaRobot } from 'react-icons/fa';
+import { ChakraProvider } from '@chakra-ui/react'
+import { WagmiConfig } from 'wagmi'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { config } from './wagmi'
+import theme from './theme'
+import { StakingPanel } from './components/StakingPanel'
+import { WalletConnect } from './components/WalletConnect'
+import { Box, Container, VStack, Heading, Text, SimpleGrid, Icon, Button, Link, HStack } from '@chakra-ui/react'
+import { FaGamepad, FaCoins, FaDiscord, FaExternalLinkAlt } from 'react-icons/fa'
+import { TRIVIA_TOKEN_ADDRESS } from './constants'
 
-const queryClient = new QueryClient();
+// Create a client
+const queryClient = new QueryClient()
 
-function FeatureCard({ icon, title, description }: { icon: React.ElementType; title: string; description: string }) {
+function FeatureCard({ icon, title, description }: { icon: any; title: string; description: string }) {
   return (
-    <Box textAlign="center" p={6}>
-      <Icon as={icon} w={10} h={10} mb={4} color="purple.400" />
-      <Heading size="md" mb={2}>{title}</Heading>
-      <Text color="whiteAlpha.800">{description}</Text>
-    </Box>
-  );
+    <VStack
+      spacing={4}
+      p={6}
+      bg="whiteAlpha.100"
+      borderRadius="xl"
+      borderWidth="1px"
+      borderColor="whiteAlpha.200"
+      align="center"
+      textAlign="center"
+    >
+      <Icon as={icon} boxSize={8} color="purple.400" />
+      <VStack spacing={2}>
+        <Text fontSize="lg" fontWeight="bold" color="whiteAlpha.900">
+          {title}
+        </Text>
+        <Text color="whiteAlpha.700">
+          {description}
+        </Text>
+      </VStack>
+    </VStack>
+  )
 }
 
 function App() {
   return (
-    <WagmiConfig config={config}>
-      <QueryClientProvider client={queryClient}>
+    <QueryClientProvider client={queryClient}>
+      <WagmiConfig config={config}>
         <ChakraProvider theme={theme}>
-          {/* Outermost container - takes up full viewport */}
-          <Box 
-            minH="100vh" 
-            w="100vw" 
-            bg="gray.900" 
-            overflowX="hidden"
-            display="flex"
-            flexDirection="column"
-          >
-            {/* Main content wrapper - centers content and allows scrolling */}
-            <Box 
-              flex="1"
-              w="full"
-              display="flex"
-              flexDirection="column"
-              justifyContent="center"
-              py={{ base: 8, md: 12 }}
-            >
-              {/* Content container - constrains width */}
-              <Container 
-                maxW="container.lg" 
-                w="full"
-                mx="auto"
-                px={{ base: 4, md: 6 }}
-              >
-                <Stack spacing={{ base: 8, md: 12 }} align="center">
-                  {/* Hero Section */}
-                  <Stack spacing={6} textAlign="center" w="full" maxW="800px" mx="auto">
-                    <Heading 
-                      size="2xl" 
-                      bgGradient="linear(to-r, purple.400, pink.400)" 
-                      bgClip="text"
-                      lineHeight="1.2"
+          <Container maxW="container.lg" py={8}>
+            <VStack spacing={12}>
+              <VStack spacing={4} textAlign="center">
+                <Heading size="2xl" bgGradient="linear(to-r, purple.400, pink.400)" bgClip="text">
+                  Trivia Token
+                </Heading>
+                <Text fontSize="xl" color="whiteAlpha.900">
+                  Play trivia, earn tokens, and stake for rewards
+                </Text>
+                <Text fontSize="md" color="whiteAlpha.700" maxW="container.md">
+                  Join our Discord community, participate in trivia games, and earn TRIVIA tokens. 
+                  Stake your earnings for high APY rewards and exclusive access to premium features.
+                </Text>
+              </VStack>
+
+              <SimpleGrid columns={{ base: 1, md: 3 }} spacing={8} w="full">
+                <FeatureCard
+                  icon={FaGamepad}
+                  title="Play & Earn"
+                  description="Get paid to answer trivia questions on Discord"
+                />
+                <FeatureCard
+                  icon={FaCoins}
+                  title="Stake & Grow"
+                  description="Stake your TRIVIA tokens to earn up to 400% APY in rewards"
+                />
+                <FeatureCard
+                  icon={FaDiscord}
+                  title="Engage Community"
+                  description="Add our Discord bot to your server to increase engagement"
+                />
+              </SimpleGrid>
+
+              <Box w="full" display="flex" justifyContent="center">
+                <WalletConnect />
+              </Box>
+
+              <VStack spacing={8} w="full">
+                <StakingPanel />
+                <HStack spacing={4}>
+                  <Link 
+                    href={`https://app.uniswap.org/swap?chain=base&outputCurrency=${TRIVIA_TOKEN_ADDRESS}`}
+                    isExternal
+                    _hover={{ textDecoration: 'none' }}
+                  >
+                    <Button
+                      size="lg"
+                      leftIcon={<FaExternalLinkAlt />}
+                      colorScheme="purple"
+                      variant="outline"
                     >
-                      Trivia Token
-                    </Heading>
-                    <Heading size="md" color="whiteAlpha.800" fontWeight="normal">
-                      The First Ever AI-Powered Play-to-Earn Token
-                    </Heading>
-                    <Text fontSize="lg" color="whiteAlpha.800" maxW="600px" mx="auto">
-                      Earn rewards by playing trivia, stake your tokens for passive income, and enhance your Discord community with our AI-powered bot.
-                    </Text>
-                    <Box py={4}>
-                      <WalletConnect />
-                    </Box>
-                  </Stack>
-
-                  {/* Features */}
-                  <SimpleGrid columns={{ base: 1, md: 3 }} spacing={8} w="full">
-                    <FeatureCard
-                      icon={FaBrain}
-                      title="Play & Earn"
-                      description="Answer AI-generated trivia questions and earn TRIVIA tokens"
-                    />
-                    <FeatureCard
-                      icon={FaCoins}
-                      title="Stake & Grow"
-                      description="Earn up to 400% APY by staking your tokens"
-                    />
-                    <FeatureCard
-                      icon={FaRobot}
-                      title="Engage Community"
-                      description="Stake 100,000 TRIVIA tokens to add our AI trivia bot to your Discord server"
-                    />
-                  </SimpleGrid>
-
-                  {/* Main Panels */}
-                  <Box w="full">
-                    <Tabs variant="soft-rounded" colorScheme="purple" align="center" w="full">
-                      <TabList mb={8}>
-                        <Tab color="whiteAlpha.700" _selected={{ color: 'white', bg: 'purple.500' }}>Stake</Tab>
-                        <Tab color="whiteAlpha.700" _selected={{ color: 'white', bg: 'purple.500' }}>Swap</Tab>
-                      </TabList>
-                      <TabPanels>
-                        <TabPanel p={0}>
-                          <StakingPanel />
-                        </TabPanel>
-                        <TabPanel p={0}>
-                          <SwapPanel />
-                        </TabPanel>
-                      </TabPanels>
-                    </Tabs>
-                  </Box>
-                </Stack>
-              </Container>
-            </Box>
-          </Box>
+                      Trade on Uniswap
+                    </Button>
+                  </Link>
+                  <Link 
+                    href="https://discord.com/api/oauth2/authorize?client_id=YOUR_CLIENT_ID&permissions=2048&scope=bot%20applications.commands"
+                    isExternal
+                    _hover={{ textDecoration: 'none' }}
+                  >
+                    <Button
+                      size="lg"
+                      leftIcon={<FaDiscord />}
+                      colorScheme="purple"
+                      variant="outline"
+                    >
+                      Add to Discord
+                    </Button>
+                  </Link>
+                </HStack>
+              </VStack>
+            </VStack>
+          </Container>
         </ChakraProvider>
-      </QueryClientProvider>
-    </WagmiConfig>
-  );
+      </WagmiConfig>
+    </QueryClientProvider>
+  )
 }
 
-export default App;
+export default App
