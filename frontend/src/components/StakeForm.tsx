@@ -21,6 +21,16 @@ export function StakeForm() {
     args: address ? [address, TRIVIA_TOKEN_ADDRESS as `0x${string}`] : undefined,
   });
 
+  // Add polling effect for allowance
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (isApproving) {
+        refetchAllowance();
+      }
+    }, 2000);
+    return () => clearInterval(interval);
+  }, [isApproving, refetchAllowance]);
+
   // Handle transaction status changes
   useEffect(() => {
     if (status === 'success' && hash) {
@@ -72,7 +82,10 @@ export function StakeForm() {
           isClosable: true,
         });
         setIsApproving(false);
-        refetchAllowance();
+        // Force refetch allowance after approval
+        setTimeout(() => {
+          refetchAllowance();
+        }, 1000);
       } else {
         // Refresh the staking stats after successful stake
         if (typeof window !== 'undefined' && (window as any).refetchStakingStats) {
@@ -150,6 +163,11 @@ export function StakeForm() {
       setAmount(value);
     }
   };
+
+  // Add useEffect to log allowance changes
+  useEffect(() => {
+    console.log('Current allowance:', allowance?.toString());
+  }, [allowance]);
 
   const needsApproval = !allowance || (typeof allowance === 'bigint' && amount && allowance < parseEther(amount));
   const isLoading = isApproving || status === 'pending' || isWaitingForTransaction;
